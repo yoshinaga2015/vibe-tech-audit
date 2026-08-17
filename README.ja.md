@@ -1,53 +1,95 @@
+<p align="right">
+  <a href="./README.md"><img src="https://img.shields.io/badge/EN-1e293b?style=for-the-badge&label=Docs&labelColor=0f172a" alt="English docs" /></a>
+  <a href="./README.ja.md"><img src="https://img.shields.io/badge/JP-0ea5e9?style=for-the-badge&label=Docs&labelColor=0f172a" alt="Japanese docs" /></a>
+</p>
+
+<div align="center">
+
 # vibe-tech-audit
 
-バイブコーディング／AI実装アプリ向けの**技術監査 Agent Skill**（Cursor ほか `SKILL.md` 対応ホスト）。
+**バイブコーディング向け・チェックリスト駆動の技術監査**
 
-デモで動くことと、公開して安全なことは別です。IDOR、秘密情報の露出、RLS未設定、認証ガードの真偽反転、XSS、署名なし Webhook、AI/API 課金の青天井などを、チェックリスト駆動で潰します。
+Cursor Agent Skill · 証拠必須 · 報告ファースト
 
-**言語**
+<br />
 
-| フォルダ | 言語 | Skill 名 |
+[![License: MIT](https://img.shields.io/badge/License-MIT-0f172a?style=flat-square&labelColor=0ea5e9&color=0f172a)](LICENSE)
+[![Skill EN](https://img.shields.io/badge/skill-vibe--tech--audit-64748b?style=flat-square&labelColor=0f172a)](skills/vibe-tech-audit)
+[![Skill JA](https://img.shields.io/badge/skill-vibe--tech--audit--ja-0ea5e9?style=flat-square&labelColor=0f172a)](skills/vibe-tech-audit-ja)
+[![Modes](https://img.shields.io/badge/modes-feature%20%7C%20prelaunch%20%7C%20fix-38bdf8?style=flat-square&labelColor=0f172a)](#モード)
+[![Lens](https://img.shields.io/badge/lens-standard%20%7C%20adversarial-22d3ee?style=flat-square&labelColor=0f172a)](#任意の-adversarial-lens)
+
+<br />
+
+[インストール](#インストールcursor)
+·
+[モード](#モード)
+·
+[Adversarial lens](#任意の-adversarial-lens)
+·
+[動き方](#動き方)
+·
+[JA チェックリスト](docs/prelaunch-checklist.ja.md)
+·
+[EN チェックリスト](docs/prelaunch-checklist.en.md)
+
+</div>
+
+---
+
+デモで動くこと ≠ 公開して安全なこと。チャットで通った実装を、本番前提で潰します:
+
+`IDOR` · `秘密情報の露出` · `RLS未設定` · `認証ガードの真偽反転` · `XSS` · `署名なし Webhook` · `AI/API 課金の青天井`
+
+| パッケージ | 言語 | Skill 名 |
 |---|---|---|
 | [`skills/vibe-tech-audit`](skills/vibe-tech-audit) | English | `vibe-tech-audit` |
 | [`skills/vibe-tech-audit-ja`](skills/vibe-tech-audit-ja) | 日本語 | `vibe-tech-audit-ja` |
 
-人間向けチェックリスト: [docs/prelaunch-checklist.ja.md](docs/prelaunch-checklist.ja.md) · [docs/prelaunch-checklist.en.md](docs/prelaunch-checklist.en.md)
-
-[English README](README.md)
+> **既定の姿勢:** 報告のみ。証拠必須（`file:line` またはコマンド出力）。でっち上げの PASS 禁止。**fix** モード以外で大規模リファクタしない。
 
 ---
 
 ## モード
 
 | モード | いつ | 動作 |
-|---|---|---|
+|:---|:---|:---|
 | **feature** | 機能追加・差分のあと | 差分範囲＋毎回の ★ |
 | **prelaunch** | 実ユーザー・本番の前 | 該当チェック全項 → **PASS / FAIL / CONDITIONAL** |
 | **fix** | 「直して」と明示したとき | 指定 finding の最小修正と再検証 |
 
-デフォルトは**報告のみ**。修正モード以外で大規模リファクタしません。
+```text
+feature   →  差分を安全に出す
+prelaunch →  公開の合否を出す
+fix       →  指定 finding を閉じる（明示時のみ）
+```
 
 ---
 
 ## 任意の adversarial lens
 
 `feature`、`prelaunch`、修正後の再検証には `lens: adversarial` を追加できます。
-これは目標志向の攻撃チェーン分析であり、本格的な組織レッドチーム演習を
-実施したようには表現しません。
 
-- 攻撃目標と初期権限を定義
-- 信頼境界をまたぐチェーンを証拠付きで追跡
-- CONFIRMED / PLAUSIBLE / BLOCKED / UNVERIFIED で判定
-- prevention に加えて detection / containment / recovery を確認
-- 実環境テストの許可と非破壊制約が明示されなければ static-only
+目標志向の攻撃チェーン分析です。本格的な組織レッドチーム演習を実施したようには表現しません。
 
-例: `公開前監査を攻撃者視点でも実行して。一般ユーザーから他テナントの請求書へ届くか確認して`
+| 観点 | 得られるもの |
+|:---|:---|
+| 目標 | 攻撃目標と初期権限 |
+| チェーン | 信頼境界をまたぐ証拠付き経路 |
+| 判定 | `CONFIRMED` / `PLAUSIBLE` / `BLOCKED` / `UNVERIFIED` |
+| Blue team | prevention **と** detection / containment / recovery |
+| 安全側 | 実環境テストの許可がなければ `static-only` |
+
+```text
+公開前監査を攻撃者視点でも実行して。
+一般ユーザーから他テナントの請求書へ届くか確認して
+```
 
 ---
 
 ## インストール（Cursor）
 
-1. Skill フォルダを個人スキルディレクトリへコピーします。
+**個人スキル**
 
 ```bash
 # 日本語
@@ -57,16 +99,18 @@ cp -R skills/vibe-tech-audit-ja ~/.cursor/skills/
 cp -R skills/vibe-tech-audit ~/.cursor/skills/
 ```
 
-2. Cursor を再起動するか、エージェントをリロードします。
-3. プロジェクトのチャットで例:
+1. Cursor を再起動するか、エージェントをリロードします。
+2. プロジェクトのチャットで例:
 
-- `公開前に技術監査して`
-- `この差分を技術監査して`
-- `CRITICAL を直して`
+```text
+公開前に技術監査して
+この差分を技術監査して
+CRITICAL を直して
+```
 
 どちらか一方の言語だけ入れて構いません。
 
-リポジトリ共有インストール:
+**プロジェクト共有**
 
 ```bash
 mkdir -p .cursor/skills
@@ -77,38 +121,44 @@ cp -R skills/vibe-tech-audit-ja .cursor/skills/
 
 ## 動き方
 
-1. スタックと表面（認可・決済・LLM・モバイル等）を**プロファイル**
-2. 定番アンチパターンを**機械スキャン**
-3. **認可・データ経路を最優先**でレビュー（証拠必須）
-4. 該当表面だけ深掘り
-5. 必要なら**攻撃チェーン分析**
-6. **検知・対応**も評価し、Severity 付きレポート。公開前は合否を出す
+```text
+1. Profile     スタックと表面（認可・決済・LLM・モバイル・アップロード・マルチテナント）
+2. Scan        scripts/scan-antipatterns.sh（または同等の Grep）で定番アンチパターン
+3. Prioritize  認可・データ経路を最優先 — 証拠必須
+4. Deep-dive   該当表面だけ深掘り
+5. Optional    攻撃チェーン分析（adversarial lens）
+6. Assess      検知・対応も評価 → Severity 付きレポート（公開前は合否）
+```
 
-`SKILL.md` は薄く保ち、詳細は `references/` に置いています（progressive disclosure）。
+`SKILL.md` は薄く保ち、詳細は `references/` に置く（progressive disclosure）。
 
 ---
 
 ## 必要環境
 
-- Cursor（または Agent Skills を読めるホスト）
-- スキャンスクリプト用に [ripgrep](https://github.com/BurntSushi/ripgrep)（`rg`）推奨
+| 必要なもの | メモ |
+|:---|:---|
+| Cursor（または Agent Skills 対応ホスト） | `SKILL.md` を読み込む |
+| [ripgrep](https://github.com/BurntSushi/ripgrep) | スキャンスクリプト用に `rg` 推奨 |
 
 ---
 
 ## これは何ではないか
 
-- 本格的なペンテストや ASVS 認証の代替ではない
-- 本格的なレッドチーム演習を実施したという証明ではない
-- 漏れた本番鍵のローテーションそのものは人間の作業
-- 無作為な Skill インストールの安全性審査には使わない
-- 法務・コンプライアンス助言ではない
+| ではないもの | 理由 |
+|:---|:---|
+| 本格ペンテスト / ASVS 認証の代替 | スコープが違う |
+| 本格レッドチーム演習の証明 | adversarial lens ≠ 組織レッドチーム |
+| 漏れた本番鍵のローテーション代行 | 回転作業は人間側 |
+| Skill サプライチェーン監査 | 無作為インストールの「承認」には使わない |
+| 法務・コンプライアンス助言 | エンジニアリング用チェックリスト |
 
 ---
 
 ## 構成
 
-```
-publish/
+```text
+.
 ├── README.md
 ├── README.ja.md
 ├── LICENSE
@@ -116,15 +166,23 @@ publish/
 │   ├── prelaunch-checklist.en.md
 │   └── prelaunch-checklist.ja.md
 └── skills/
-    ├── vibe-tech-audit/          # 英語
-    └── vibe-tech-audit-ja/       # 日本語
+    ├── vibe-tech-audit/       # 英語
+    └── vibe-tech-audit-ja/    # 日本語
 ```
 
 ---
 
 ## 方法論
 
-OWASP Top 10:2025、API Security Top 10:2023、ASVS 5.0（章立て参照）、WSTG、MASVS、LLM Top 10:2025、CWE Top 25、および AI 生成アプリで繰り返される公開事故（RLS 無効、クライアントの `service_role`、middleware のみの認可など）に基づきます。
+以下にマッピングしています:
+
+- OWASP Top 10:2025
+- OWASP API Security Top 10:2023
+- ASVS 5.0（章立て参照）
+- WSTG · MASVS
+- OWASP LLM Top 10:2025
+- CWE Top 25
+- AI 生成アプリで繰り返される公開事故（RLS 無効、クライアントの `service_role`、middleware のみの認可など）
 
 ---
 
