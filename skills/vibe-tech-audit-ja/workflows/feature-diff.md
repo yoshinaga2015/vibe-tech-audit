@@ -5,6 +5,7 @@
 ## Entry
 
 - モード = `feature`
+- Lens = `standard` または `adversarial`
 - 対象リポジトリが開いている
 - SKILL.md の Phase 1（プロファイル）を完了している
 
@@ -48,7 +49,20 @@
 
 出口: 追加 finding。
 
-## Phase F4 — 報告
+## Phase F4 — 任意のadversarial lens
+
+入口: F3 完了。
+行動:
+
+- `lens = adversarial` なら
+  [adversarial-review.md](adversarial-review.md) を変更された攻撃経路に適用する。
+- 目標は差分の blast radius に限定し、フルリポジトリまたは本格レッドチームを
+  実施したように表現しない。
+- `lens = standard` ならスキップする。
+
+出口: 差分範囲の攻撃チェーンまたは N/A。
+
+## Phase F5 — 報告
 
 入口: レビュー完了。  
 行動:

@@ -43,6 +43,10 @@ Actions:
 1. Re-check only fixed items.
 2. Re-run machine scan on the diff for newly introduced issues.
 3. Update report: `open` → `fixed`, append verification evidence.
+4. If the original audit used `lens = adversarial`, re-run only the affected
+   attack chains and confirm they are now `BLOCKED`.
+5. For high-impact findings, verify the relevant detection/containment control
+   from [detection-response.md](../references/detection-response.md).
 
 Exit: updated report; list remaining opens.
 

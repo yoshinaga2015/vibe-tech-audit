@@ -129,6 +129,25 @@ This is not a full ASVS dump. Run ★ on every feature that touches data or auth
 rg -n "service_role|sk_live_|queryRawUnsafe|dangerouslySetInnerHTML|origin:\\s*[\"']\\*" --glob '!node_modules/**'
 ```
 
+## 15. Detection and response
+
+- [ ] ★ **launch** Repeated object-id enumeration and authorization failures can trigger an actionable alert
+- [ ] ★ **payments** Invalid signatures, stale timestamps, and duplicate webhook events are detected
+- [ ] ★ **llm** Per-user and global cost spikes alert a named responder
+- [ ] **ops** Privileged actions have tamper-resistant audit context
+- [ ] **ops** Sessions, API keys, and webhook secrets can be revoked
+- [ ] **ops** A short incident runbook and tested recovery procedure exist
+
+Logging alone is PARTIAL. Someone or an automated control must be able to act.
+
+## 16. Optional adversarial lens
+
+Define up to three attacker objectives and trace each entry point → trust
+boundary → authorization decision → protected sink. Grade chains as
+CONFIRMED / PLAUSIBLE / BLOCKED / UNVERIFIED, then assess prevention,
+detection, containment, and recovery. Do not call this a full red-team
+engagement and do not run destructive tests.
+
 ---
 
 ## Sources (methodology)

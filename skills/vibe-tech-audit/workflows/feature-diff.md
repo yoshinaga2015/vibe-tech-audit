@@ -5,6 +5,7 @@ Diff / post-feature technical audit. Do not run the full checklist.
 ## Entry
 
 - Mode = `feature`
+- Lens = `standard` or `adversarial`
 - Target repo open
 - SKILL.md Phase 1 (profile) complete
 
@@ -48,7 +49,20 @@ Always consult [ai-antipatterns.md](../references/ai-antipatterns.md) when data 
 
 Exit: extra findings.
 
-## Phase F4 — Report
+## Phase F4 — Optional adversarial lens
+
+Entry: F3 done.
+Actions:
+
+- If `lens = adversarial`, run
+  [adversarial-review.md](adversarial-review.md) against changed attack paths.
+- Keep objectives within the diff’s blast radius; do not pretend a full-repo
+  or live red-team exercise was performed.
+- If `lens = standard`, skip.
+
+Exit: diff-scoped attack chains or N/A.
+
+## Phase F5 — Report
 
 Entry: review done.  
 Actions:

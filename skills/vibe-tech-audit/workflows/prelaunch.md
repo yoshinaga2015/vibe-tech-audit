@@ -5,6 +5,7 @@ Full technical audit gate before production / real users.
 ## Entry
 
 - Mode = `prelaunch`
+- Lens = `standard` or `adversarial`
 - SKILL.md Phase 1 (profile) complete
 - Surface flags set (payments / llm / mobile)
 
@@ -44,24 +45,33 @@ Actions: load only flagged refs.
 
 Exit: surface findings.
 
-## Phase P4 — Attacker lens (short)
+## Phase P4 — Defensive detection and response
 
 Entry: P3 done.  
-Actions: one paragraph each (N/A if no matching code):
+Actions:
 
-1. Authed user enumerates other object ids
-2. Client forges price / role / tenant
-3. Public bucket or anon key alone exfiltrates data
-4. Forged webhook/cron fulfills entitlements
-5. XSS or token theft steals session (especially if tokens in localStorage)
+1. Read [detection-response.md](../references/detection-response.md).
+2. Grade applicable controls VERIFIED / PARTIAL / MISSING / UNVERIFIED.
+3. A log without an alert, owner, or response path is only PARTIAL.
+4. Add HIGH findings for missing detection/containment on a confirmed
+   high-impact attack path; otherwise report the operational gap at its
+   appropriate severity.
 
-Link existing finding ids; add new ones if needed.
+Exit: defensive-coverage table.
 
-Exit: scenario table.
-
-## Phase P5 — Verdict + report
+## Phase P5 — Optional adversarial lens
 
 Entry: P4 done.  
+Actions:
+
+- If `lens = adversarial`, run [adversarial-review.md](adversarial-review.md).
+- If `lens = standard`, skip without inventing attacker scenarios.
+
+Exit: attack-chain analysis or N/A.
+
+## Phase P6 — Verdict + report
+
+Entry: P5 done.
 Actions:
 
 1. Write full report via [report-template.md](../references/report-template.md).
@@ -73,7 +83,7 @@ Exit: PASS / FAIL / CONDITIONAL + report file.
 
 ## Exit
 
-- P1–P5 complete
+- P1–P6 complete
 - Every finding has evidence or UNVERIFIED
 - Verdict emitted
 - No unsolicited code changes

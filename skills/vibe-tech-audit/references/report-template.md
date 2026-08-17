@@ -6,6 +6,8 @@ Suggested filename: `tech-audit-YYYY-MM-DD.md` (repo root, or `docs/` / `Flow/` 
 # Tech Audit — <project> — <YYYY-MM-DD>
 
 - Mode: feature | prelaunch | fix
+- Lens: standard | adversarial
+- Runtime: static-only | live-test
 - Verdict: PASS | FAIL | CONDITIONAL | n/a (feature)
 - Stack: …
 - Surfaces: auth= / payments= / llm= / mobile= / upload= / multi_tenant=
@@ -35,10 +37,15 @@ Suggested filename: `tech-audit-YYYY-MM-DD.md` (repo root, or `docs/` / `Flow/` 
 |---|---|---|
 | … | no runtime | … |
 
-## Attacker scenarios (prelaunch)
-| # | Scenario | Result |
+## Detection and response
+| Control | Grade | Evidence / gap |
 |---|---|---|
-| 1 | … | linked F-xxx / N/A |
+| Enumeration detection | VERIFIED|PARTIAL|MISSING|UNVERIFIED | … |
+
+## Attack-chain analysis (adversarial lens only)
+| ID | Objective and chain | Status | Detection / containment |
+|---|---|---|---|
+| AC-01 | basic user → forged orgId → unscoped export | CONFIRMED|PLAUSIBLE|BLOCKED|UNVERIFIED | … |
 
 ## Next 3 actions
 1. …
@@ -61,3 +68,4 @@ Report: <path or "chat only">
 - No finding without evidence
 - One finding per root cause; multiple locations allowed
 - After fix mode, update Status and add re-verification evidence
+- Do not label the result a red-team engagement; call it adversarial review or attack-chain analysis

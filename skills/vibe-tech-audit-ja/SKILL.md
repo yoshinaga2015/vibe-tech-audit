@@ -4,8 +4,10 @@ description: >-
   バイブコーディング／AI実装アプリを技術監査する。認可(IDOR)、秘密情報、XSS/注入、
   認証、決済、RLS、公開前ゲートをチェックリスト駆動で確認する。
   「技術監査」「公開前チェック」「セキュリティ監査」「IDOR」「バイブコーディング監査」
-  「デプロイ前に見て」「prelaunch audit」「security audit」で使う。
-  モード: 差分監査 / 公開前フル / 修正（明示時）。
+  「デプロイ前に見て」「攻撃者視点」「攻撃チェーン」「adversarial review」
+  「prelaunch audit」「security audit」で使う。
+  モード: 差分監査 / 公開前フル / 修正（明示時）。任意で攻撃チェーンを
+  分析する adversarial lens を適用する。
   Skill自体のインストール安全性審査や、スタイルのみのレビューには使わない。
 ---
 
@@ -24,6 +26,7 @@ description: >-
 3. **監査と修正を分離** — デフォルトは報告のみ。コード変更はユーザーが明示したときだけ（`fix` モード）。
 4. **全部を毎回読まない** — プロファイルで表面を切り、該当 `references/` だけ読む。
 5. **デモ合格を合格にしない** — UI が動くこと、ハッピーパステスト通過は合否条件にしない。
+6. **赤／青はモードではなくレンズ** — ライフサイクルのモードを維持し、攻撃者分析と防御検知を直交させる。
 
 ## When to Use
 
@@ -51,6 +54,19 @@ description: >-
 
 `fix` は直前の監査 finding がある前提。無ければ先に `feature` または `prelaunch` を回す。
 
+## Lens Routing
+
+モードと独立して lens を決める:
+
+| シグナル | Lens | 動作 |
+|---|---|---|
+| 通常の監査依頼 | `standard` | チェックリストと証拠レビュー |
+| 攻撃者視点、攻撃チェーン、悪用経路、他テナントに届くか | `adversarial` | [workflows/adversarial-review.md](workflows/adversarial-review.md) も実行 |
+
+adversarial は基本モードを置き換えない。例: `mode: prelaunch`,
+`lens: adversarial`。実環境テストの許可またはスコープが曖昧なら
+`runtime: static-only` とする。
+
 ## Shared Pipeline
 
 ```
@@ -59,7 +75,8 @@ Phase 1 プロファイル（スタック・表面）
 Phase 2 機械スキャン（scripts + grep）
 Phase 3 認可・データ経路レビュー（最優先）
 Phase 4 該当表面の深掘り（payments / llm / mobile）
-Phase 5 レポート＋判定
+Phase 5 任意のadversarial lens＋防御カバレッジ
+Phase 6 レポート＋判定
 ```
 
 ### Phase 1 — プロファイル（入口）
@@ -74,6 +91,7 @@ Phase 5 レポート＋判定
 | フラグ | 追加で読む |
 |---|---|
 | 常時 | [checklist-core.md](references/checklist-core.md)、[ai-antipatterns.md](references/ai-antipatterns.md) |
+| prelaunch または adversarial | [detection-response.md](references/detection-response.md) |
 | payments | [checklist-payments.md](references/checklist-payments.md) |
 | llm | [checklist-llm.md](references/checklist-llm.md) |
 | mobile | [checklist-mobile.md](references/checklist-mobile.md) |
@@ -91,7 +109,7 @@ Phase 5 レポート＋判定
 
 出口: 確認済み候補リスト。
 
-### Phase 5 — レポート契約
+### Phase 6 — レポート契約
 
 [report-template.md](references/report-template.md) に従う。
 
@@ -116,11 +134,13 @@ Phase 5 レポート＋判定
 | [workflows/feature-diff.md](workflows/feature-diff.md) | 差分監査手順 |
 | [workflows/prelaunch.md](workflows/prelaunch.md) | 公開前フル手順 |
 | [workflows/fix-findings.md](workflows/fix-findings.md) | 修正モード |
+| [workflows/adversarial-review.md](workflows/adversarial-review.md) | 任意の目標志向・攻撃者レンズ |
 | [references/checklist-core.md](references/checklist-core.md) | 認可・認証・秘密・注入・CORS・性能・エラー等 |
 | [references/checklist-payments.md](references/checklist-payments.md) | 決済・Webhook |
 | [references/checklist-llm.md](references/checklist-llm.md) | LLM・エージェント |
 | [references/checklist-mobile.md](references/checklist-mobile.md) | モバイル |
 | [references/ai-antipatterns.md](references/ai-antipatterns.md) | AI実装の定番ミス |
+| [references/detection-response.md](references/detection-response.md) | 検知・封じ込め・復旧 |
 | [references/stack-signals.md](references/stack-signals.md) | スタック検出 |
 | [references/grep-recipes.md](references/grep-recipes.md) | 検索レシピ |
 | [references/report-template.md](references/report-template.md) | レポート形 |
@@ -129,9 +149,11 @@ Phase 5 レポート＋判定
 ## Success Criteria
 
 - [ ] モードが明示されている
+- [ ] lens と runtime が明示されている
 - [ ] profile（表面フラグ）がある
 - [ ] 全 finding に証拠がある
 - [ ] 認可系をスキップしていない（該当コードがある場合）
 - [ ] 勝手に大規模修正していない（fix 以外）
 - [ ] prelaunch なら PASS/FAIL/CONDITIONAL を出している
+- [ ] prelaunch なら行動可能な検知・対応も評価している
 - [ ] チャット要約と、可能ならレポートファイルがある
