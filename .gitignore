@@ -1,0 +1,6 @@
+# Ignore local noise if this folder is used as a repo root
+.DS_Store
+*.log
+node_modules/
+.cursor/
+tech-audit-*.md
