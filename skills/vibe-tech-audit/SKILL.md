@@ -43,7 +43,7 @@ Agent-oriented checklists live under `references/`. Optional human-readable docs
 
 ## Mode Routing
 
-Infer mode from the user message. If ambiguous, AskQuestion once.
+Infer mode from the user message. If ambiguous, ask the user once to clarify (do not invent a mode).
 
 | Signals | Mode | Workflow |
 |---|---|---|

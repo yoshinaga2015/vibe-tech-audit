@@ -10,7 +10,7 @@ All must hold; otherwise return to audit mode.
 2. Finding list exists (prior report or user-specified ids)
 3. Scope is clear (e.g. CRITICAL only / F-003 only / all)
 
-If scope is ambiguous, AskQuestion once. **Do not guess-refactor the repo.**
+If scope is ambiguous, ask the user once to clarify. **Do not guess-refactor the repo.**
 
 ## Phase X1 — Queue
 

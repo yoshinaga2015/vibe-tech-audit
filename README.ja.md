@@ -83,22 +83,44 @@ fix       →  指定 finding を閉じる（明示時のみ）
 
 ## インストール
 
-オープンな [skills CLI](https://skills.sh/)（`npx skills`）を使います。
+[Agent Skills](https://agentskills.io/) 形式＋[skills CLI](https://skills.sh/)（`npx skills`）。**Cursor**、**Claude Code**、**Codex** ほか対応ホストで使えます。
 
-**グローバル（個人の Cursor skills）**
+**推奨 — 主要エージェントへグローバルインストール**
 
 ```bash
 # 日本語
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a cursor -g
+npx skills add yoshinaga2015/vibe-tech-audit \
+  -s vibe-tech-audit-ja \
+  -a cursor -a claude-code -a codex \
+  -g
 
 # 英語
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a cursor -g
+npx skills add yoshinaga2015/vibe-tech-audit \
+  -s vibe-tech-audit \
+  -a cursor -a claude-code -a codex \
+  -g
+```
+
+**エージェントを1つだけ**（例）
+
+```bash
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a claude-code -g
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a codex -g
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a cursor -g
 ```
 
 **プロジェクト共有**（アプリのリポジトリ直下で実行。`-g` なし）
 
 ```bash
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a cursor
+npx skills add yoshinaga2015/vibe-tech-audit \
+  -s vibe-tech-audit-ja \
+  -a cursor -a claude-code -a codex
+```
+
+CLI が知る全エージェントへ:
+
+```bash
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a '*' -g
 ```
 
 中身だけ確認:
@@ -115,7 +137,7 @@ npx skills update vibe-tech-audit-ja
 npx skills update vibe-tech-audit
 ```
 
-その後 Cursor を再起動／新しいエージェントチャットで:
+その後 **新しいエージェントセッション** で:
 
 ```text
 公開前に技術監査して
@@ -123,17 +145,33 @@ npx skills update vibe-tech-audit
 CRITICAL を直して
 ```
 
+| エージェント | CLI id | グローバル | プロジェクト |
+|:---|:---|:---|:---|
+| Cursor | `cursor` | `~/.cursor/skills/` | `.agents/skills/` |
+| Claude Code | `claude-code` | `~/.claude/skills/` | `.claude/skills/` |
+| Codex | `codex` | `~/.codex/skills/` | `.agents/skills/` |
+
+その他のホスト: [skills CLI supported agents](https://github.com/vercel-labs/skills#supported-agents)。
+
 <details>
 <summary>手動フォールバック（<code>cp</code>）</summary>
 
 ```bash
-# 個人
-cp -R skills/vibe-tech-audit-ja ~/.cursor/skills/
-cp -R skills/vibe-tech-audit ~/.cursor/skills/
+SKILL=vibe-tech-audit-ja   # または vibe-tech-audit
 
-# プロジェクト
-mkdir -p .cursor/skills
-cp -R skills/vibe-tech-audit-ja .cursor/skills/
+# Cursor（グローバル）
+cp -R "skills/$SKILL" ~/.cursor/skills/
+
+# Claude Code（グローバル）
+cp -R "skills/$SKILL" ~/.claude/skills/
+
+# Codex（グローバル）
+cp -R "skills/$SKILL" ~/.codex/skills/
+
+# プロジェクト（Cursor / Codex は .agents/skills）
+mkdir -p .agents/skills .claude/skills
+cp -R "skills/$SKILL" .agents/skills/
+cp -R "skills/$SKILL" .claude/skills/
 ```
 
 </details>
@@ -159,7 +197,8 @@ cp -R skills/vibe-tech-audit-ja .cursor/skills/
 
 | 必要なもの | メモ |
 |:---|:---|
-| Cursor（または Agent Skills 対応ホスト） | `SKILL.md` を読み込む |
+| [Agent Skills](https://agentskills.io/) 対応ホスト | Cursor、Claude Code、Codex、OpenCode、Gemini CLI、GitHub Copilot など |
+| [skills CLI](https://skills.sh/)（推奨） | `npx skills add …` で各エージェントの正しいディレクトリへ入れる |
 | [ripgrep](https://github.com/BurntSushi/ripgrep) | スキャンスクリプト用に `rg` 推奨 |
 
 ---

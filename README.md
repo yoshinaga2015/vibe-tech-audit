@@ -83,25 +83,47 @@ Can a basic user reach another tenant's invoices?
 
 ## Install
 
-Uses the open [skills CLI](https://skills.sh/) (`npx skills`).
+Uses the open [Agent Skills](https://agentskills.io/) format and the [skills CLI](https://skills.sh/) (`npx skills`). Works with **Cursor**, **Claude Code**, **Codex**, and other supported hosts.
 
-**Global (personal Cursor skills)**
+**Recommended — global install for the major agents**
 
 ```bash
 # English
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a cursor -g
+npx skills add yoshinaga2015/vibe-tech-audit \
+  -s vibe-tech-audit \
+  -a cursor -a claude-code -a codex \
+  -g
 
 # Japanese
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a cursor -g
+npx skills add yoshinaga2015/vibe-tech-audit \
+  -s vibe-tech-audit-ja \
+  -a cursor -a claude-code -a codex \
+  -g
+```
+
+**One agent only** (examples)
+
+```bash
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a claude-code -g
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a codex -g
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a cursor -g
 ```
 
 **Project-scoped** (run from the app repo root; omit `-g`)
 
 ```bash
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a cursor
+npx skills add yoshinaga2015/vibe-tech-audit \
+  -s vibe-tech-audit \
+  -a cursor -a claude-code -a codex
 ```
 
-List what the package contains without installing:
+Install into every agent the CLI knows about:
+
+```bash
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a '*' -g
+```
+
+List package contents without installing:
 
 ```bash
 npx skills add yoshinaga2015/vibe-tech-audit -l
@@ -115,7 +137,7 @@ npx skills update vibe-tech-audit
 npx skills update vibe-tech-audit-ja
 ```
 
-Then restart Cursor / start a new agent chat and ask:
+Then start a **new agent session** and ask:
 
 ```text
 Run a prelaunch security audit on this app
@@ -123,17 +145,33 @@ Tech-audit this diff
 Fix the CRITICAL findings from the audit
 ```
 
+| Agent | CLI id | Global skills dir | Project skills dir |
+|:---|:---|:---|:---|
+| Cursor | `cursor` | `~/.cursor/skills/` | `.agents/skills/` |
+| Claude Code | `claude-code` | `~/.claude/skills/` | `.claude/skills/` |
+| Codex | `codex` | `~/.codex/skills/` | `.agents/skills/` |
+
+Other hosts: see [skills CLI supported agents](https://github.com/vercel-labs/skills#supported-agents).
+
 <details>
 <summary>Manual fallback (<code>cp</code>)</summary>
 
 ```bash
-# Personal
-cp -R skills/vibe-tech-audit ~/.cursor/skills/
-cp -R skills/vibe-tech-audit-ja ~/.cursor/skills/
+SKILL=vibe-tech-audit   # or vibe-tech-audit-ja
 
-# Project
-mkdir -p .cursor/skills
-cp -R skills/vibe-tech-audit .cursor/skills/
+# Cursor (global)
+cp -R "skills/$SKILL" ~/.cursor/skills/
+
+# Claude Code (global)
+cp -R "skills/$SKILL" ~/.claude/skills/
+
+# Codex (global)
+cp -R "skills/$SKILL" ~/.codex/skills/
+
+# Project (Cursor / Codex share .agents/skills)
+mkdir -p .agents/skills .claude/skills
+cp -R "skills/$SKILL" .agents/skills/
+cp -R "skills/$SKILL" .claude/skills/
 ```
 
 </details>
@@ -159,7 +197,8 @@ Progressive disclosure: thin `SKILL.md`, deep checklists under `references/`.
 
 | Need | Notes |
 |:---|:---|
-| Cursor (or compatible Agent Skills host) | Loads skills from `SKILL.md` |
+| An [Agent Skills](https://agentskills.io/)-compatible host | Cursor, Claude Code, Codex, OpenCode, Gemini CLI, GitHub Copilot, … |
+| [skills CLI](https://skills.sh/) (recommended) | `npx skills add …` installs into the correct agent directories |
 | [ripgrep](https://github.com/BurntSushi/ripgrep) | Recommended for the scan script (`rg`) |
 
 ---
