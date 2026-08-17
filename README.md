@@ -29,6 +29,24 @@ Default is **report only**. The agent must not mass-refactor unless you explicit
 
 ---
 
+## Optional adversarial lens
+
+`feature`, `prelaunch`, and post-fix validation can also use
+`lens: adversarial`. This adds goal-oriented attack-chain analysis without
+misrepresenting the result as a full organizational red-team engagement.
+
+- Defines an attacker objective and starting privilege
+- Traces evidence-backed chains across trust boundaries
+- Grades chains CONFIRMED / PLAUSIBLE / BLOCKED / UNVERIFIED
+- Checks prevention **and** detection, containment, and recovery
+- Defaults to static-only analysis unless live-test authorization and
+  non-destructive constraints are explicit
+
+Example: `Run a prelaunch audit with the adversarial lens. Can a basic user
+reach another tenant's invoices?`
+
+---
+
 ## Install (Cursor)
 
 1. Copy a skill folder into your personal skills directory:
@@ -65,7 +83,8 @@ cp -R skills/vibe-tech-audit .cursor/skills/
 2. **Machine-scan** common antipatterns (`scripts/scan-antipatterns.sh` or equivalent Grep).
 3. **Review** authorization and data paths first (evidence required: `file:line` or command output).
 4. **Deep-dive** only matching surfaces.
-5. **Report** with severities; prelaunch emits a gate verdict.
+5. Optionally run **attack-chain analysis**.
+6. **Assess detection and response**, then report; prelaunch emits a gate verdict.
 
 Progressive disclosure keeps `SKILL.md` small; detailed checklists live under `references/`.
 
@@ -81,6 +100,7 @@ Progressive disclosure keeps `SKILL.md` small; detailed checklists live under `r
 ## What this is not
 
 - Not a full penetration test or ASVS certification
+- Not a claim of a full red-team exercise
 - Not a substitute for rotating leaked production secrets
 - Not a skill-file supply-chain auditor (do not use it to “approve installing random skills”)
 - Not licensed legal/compliance advice

@@ -412,6 +412,24 @@ rg -n "findUnique\\(|findFirst\\(|update\\(|delete\\(" -g '*.ts' -g '*.tsx'
 
 `find*` / `update` / `delete` のヒットは、セッション由来の owner 条件が無いものを目視で潰す。
 
+## 17. 検知・対応
+
+- [ ] ★ **公開** オブジェクトidの連続列挙・認可失敗が、行動可能なアラートを起こすか
+- [ ] ★ **決済** 無効署名、期限切れtimestamp、重複Webhook eventを検知できるか
+- [ ] ★ **LLM** ユーザー別・全体のコスト急増が、担当者へ通知されるか
+- [ ] **運用** 特権操作に改ざん困難な監査情報があるか
+- [ ] **運用** セッション、API鍵、Webhook secretを失効できるか
+- [ ] **運用** 短いインシデントrunbookと、検証済みの復旧手順があるか
+
+ログがあるだけでは PARTIAL。人または自動コントロールが行動できること。
+
+## 18. 任意の adversarial lens
+
+最大3つの攻撃目標を定義し、入口 → 信頼境界 → 認可判断 → 保護対象sinkを
+追跡する。チェーンを CONFIRMED / PLAUSIBLE / BLOCKED / UNVERIFIED で判定し、
+prevention / detection / containment / recovery を評価する。本格的な
+レッドチーム演習と呼ばず、破壊的テストを実行しない。
+
 ---
 
 ## 元ポスト10項目の対応

@@ -5,6 +5,7 @@
 ## Entry
 
 - モード = `prelaunch`
+- Lens = `standard` または `adversarial`
 - SKILL.md の Phase 1（プロファイル）を完了している
 - 表面フラグ（payments / llm / mobile）が付いている
 
@@ -44,24 +45,32 @@
 
 出口: 表面別 findings。
 
-## Phase P4 — 攻撃者視点（短く）
+## Phase P4 — 防御側の検知・対応
 
 入口: P3 完了。  
-行動: 次のシナリオをそれぞれ1段落で書く。該当コードが無ければ N/A。
+行動:
 
-1. 認証済み一般ユーザーが他人のオブジェクト id を総当たりする
-2. クライアント改変で価格・role・tenant を偽る
-3. 公開バケットまたは anon key だけでデータを抜く
-4. Webhook または cron を偽って履行する
-5. XSS またはトークン盗難でセッションを奪う（トークンが localStorage の場合は特に）
+1. [detection-response.md](../references/detection-response.md) を読む。
+2. 各コントロールを VERIFIED / PARTIAL / MISSING / UNVERIFIED で判定する。
+3. ログがあってもアラート・担当・対応手順が無ければ PARTIAL。
+4. 確認済みの重大な攻撃経路に検知／封じ込めがなければ HIGH finding。
+   その他の運用ギャップは影響に応じた Severity とする。
 
-既に finding になっているものは参照 id を貼る。新規があれば追加する。
+出口: 防御カバレッジ表。
 
-出口: シナリオ表。
-
-## Phase P5 — 判定と報告
+## Phase P5 — 任意のadversarial lens
 
 入口: P4 完了。  
+行動:
+
+- `lens = adversarial` なら [adversarial-review.md](adversarial-review.md) を実行する。
+- `lens = standard` なら、一般論の攻撃シナリオを捏造せずスキップする。
+
+出口: 攻撃チェーン分析または N/A。
+
+## Phase P6 — 判定と報告
+
+入口: P5 完了。
 行動:
 
 1. [report-template.md](../references/report-template.md) でフルレポートをファイルに書く。
@@ -73,7 +82,7 @@
 
 ## Exit
 
-- P1–P5 完了
+- P1–P6 完了
 - 全 finding に証拠または UNVERIFIED
 - 判定が出ている
 - 未依頼のコード変更なし

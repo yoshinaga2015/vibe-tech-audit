@@ -29,6 +29,22 @@
 
 ---
 
+## 任意の adversarial lens
+
+`feature`、`prelaunch`、修正後の再検証には `lens: adversarial` を追加できます。
+これは目標志向の攻撃チェーン分析であり、本格的な組織レッドチーム演習を
+実施したようには表現しません。
+
+- 攻撃目標と初期権限を定義
+- 信頼境界をまたぐチェーンを証拠付きで追跡
+- CONFIRMED / PLAUSIBLE / BLOCKED / UNVERIFIED で判定
+- prevention に加えて detection / containment / recovery を確認
+- 実環境テストの許可と非破壊制約が明示されなければ static-only
+
+例: `公開前監査を攻撃者視点でも実行して。一般ユーザーから他テナントの請求書へ届くか確認して`
+
+---
+
 ## インストール（Cursor）
 
 1. Skill フォルダを個人スキルディレクトリへコピーします。
@@ -65,7 +81,8 @@ cp -R skills/vibe-tech-audit-ja .cursor/skills/
 2. 定番アンチパターンを**機械スキャン**
 3. **認可・データ経路を最優先**でレビュー（証拠必須）
 4. 該当表面だけ深掘り
-5. Severity 付きレポート。公開前は合否を出す
+5. 必要なら**攻撃チェーン分析**
+6. **検知・対応**も評価し、Severity 付きレポート。公開前は合否を出す
 
 `SKILL.md` は薄く保ち、詳細は `references/` に置いています（progressive disclosure）。
 
@@ -81,6 +98,7 @@ cp -R skills/vibe-tech-audit-ja .cursor/skills/
 ## これは何ではないか
 
 - 本格的なペンテストや ASVS 認証の代替ではない
+- 本格的なレッドチーム演習を実施したという証明ではない
 - 漏れた本番鍵のローテーションそのものは人間の作業
 - 無作為な Skill インストールの安全性審査には使わない
 - 法務・コンプライアンス助言ではない

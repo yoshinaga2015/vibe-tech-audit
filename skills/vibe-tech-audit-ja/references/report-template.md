@@ -6,6 +6,8 @@
 # Tech Audit — <project> — <YYYY-MM-DD>
 
 - Mode: feature | prelaunch | fix
+- Lens: standard | adversarial
+- Runtime: static-only | live-test
 - Verdict: PASS | FAIL | CONDITIONAL | n/a (feature)
 - Stack: …
 - Surfaces: auth= / payments= / llm= / mobile= / upload= / multi_tenant=
@@ -35,10 +37,15 @@
 |---|---|---|
 | … | 実行環境なし | … |
 
-## Attacker scenarios (prelaunch)
-| # | Scenario | Result |
+## Detection and response
+| Control | Grade | Evidence / gap |
 |---|---|---|
-| 1 | … | linked F-xxx / N/A |
+| Enumeration detection | VERIFIED|PARTIAL|MISSING|UNVERIFIED | … |
+
+## Attack-chain analysis（adversarial lens のみ）
+| ID | Objective and chain | Status | Detection / containment |
+|---|---|---|---|
+| AC-01 | 一般ユーザー → orgId偽装 → 未スコープexport | CONFIRMED|PLAUSIBLE|BLOCKED|UNVERIFIED | … |
 
 ## Next 3 actions
 1. …
@@ -61,3 +68,4 @@ Report: <path or "chat only">
 - Evidence の無い finding を書かない
 - 同じ根因は1 finding にまとめ、複数 Location を列挙してよい
 - fix 後は Status を更新し、再検証 Evidence を足す
+- 結果をレッドチーム演習と呼ばず、adversarial review または攻撃チェーン分析と表現する

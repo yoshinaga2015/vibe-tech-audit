@@ -43,6 +43,11 @@
 1. 直した項目だけ再チェックする。
 2. 新規に持ち込んだ問題（認可忘れ、秘密の移設ミス）が無いか機械スキャンを差分に再実行。
 3. レポートを更新: status を `open` → `fixed`、検証証拠を追記。
+4. 元の監査が `lens = adversarial` なら、影響を受ける攻撃チェーンだけ再実行し、
+   `BLOCKED` になったことを確認する。
+5. 重大 finding では
+   [detection-response.md](../references/detection-response.md) の該当する
+   検知／封じ込めコントロールも確認する。
 
 出口: 更新レポート。残 open があれば列挙。
 
