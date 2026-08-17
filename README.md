@@ -85,59 +85,11 @@ Can a basic user reach another tenant's invoices?
 
 Uses the open [Agent Skills](https://agentskills.io/) format and the [skills CLI](https://skills.sh/) (`npx skills`). Works with **Cursor**, **Claude Code**, **Codex**, and other supported hosts.
 
-**Recommended — global install for the major agents**
-
 ```bash
-# English
-npx skills add yoshinaga2015/vibe-tech-audit \
-  -s vibe-tech-audit \
-  -a cursor -a claude-code -a codex \
-  -g
-
-# Japanese
-npx skills add yoshinaga2015/vibe-tech-audit \
-  -s vibe-tech-audit-ja \
-  -a cursor -a claude-code -a codex \
-  -g
+npx skills add yoshinaga2015/vibe-tech-audit
 ```
 
-**One agent only** (examples)
-
-```bash
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a claude-code -g
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a codex -g
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a cursor -g
-```
-
-**Project-scoped** (run from the app repo root; omit `-g`)
-
-```bash
-npx skills add yoshinaga2015/vibe-tech-audit \
-  -s vibe-tech-audit \
-  -a cursor -a claude-code -a codex
-```
-
-Install into every agent the CLI knows about:
-
-```bash
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a '*' -g
-```
-
-List package contents without installing:
-
-```bash
-npx skills add yoshinaga2015/vibe-tech-audit -l
-```
-
-Update later:
-
-```bash
-npx skills update vibe-tech-audit
-# or
-npx skills update vibe-tech-audit-ja
-```
-
-Then start a **new agent session** and ask:
+The CLI asks which skill (`vibe-tech-audit` / `vibe-tech-audit-ja`), which agents, and global vs project. Then start a **new agent session** and ask:
 
 ```text
 Run a prelaunch security audit on this app
@@ -145,13 +97,39 @@ Tech-audit this diff
 Fix the CRITICAL findings from the audit
 ```
 
-| Agent | CLI id | Global skills dir | Project skills dir |
+Useful extras:
+
+```bash
+npx skills add yoshinaga2015/vibe-tech-audit -l          # list skills only
+npx skills update vibe-tech-audit                         # or vibe-tech-audit-ja
+```
+
+| Agent | CLI id | Global | Project |
 |:---|:---|:---|:---|
 | Cursor | `cursor` | `~/.cursor/skills/` | `.agents/skills/` |
 | Claude Code | `claude-code` | `~/.claude/skills/` | `.claude/skills/` |
 | Codex | `codex` | `~/.codex/skills/` | `.agents/skills/` |
 
-Other hosts: see [skills CLI supported agents](https://github.com/vercel-labs/skills#supported-agents).
+Other hosts: [skills CLI supported agents](https://github.com/vercel-labs/skills#supported-agents).
+
+<details>
+<summary>Non-interactive / CI</summary>
+
+```bash
+# Japanese → Claude Code, global
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a claude-code -g -y
+
+# English → Cursor + Claude Code + Codex, global
+npx skills add yoshinaga2015/vibe-tech-audit \
+  -s vibe-tech-audit \
+  -a cursor -a claude-code -a codex \
+  -g -y
+
+# Direct skill path (no -s)
+npx skills add https://github.com/yoshinaga2015/vibe-tech-audit/tree/main/skills/vibe-tech-audit-ja -g -y
+```
+
+</details>
 
 <details>
 <summary>Manual fallback (<code>cp</code>)</summary>
@@ -159,16 +137,10 @@ Other hosts: see [skills CLI supported agents](https://github.com/vercel-labs/sk
 ```bash
 SKILL=vibe-tech-audit   # or vibe-tech-audit-ja
 
-# Cursor (global)
-cp -R "skills/$SKILL" ~/.cursor/skills/
+cp -R "skills/$SKILL" ~/.cursor/skills/    # Cursor
+cp -R "skills/$SKILL" ~/.claude/skills/    # Claude Code
+cp -R "skills/$SKILL" ~/.codex/skills/     # Codex
 
-# Claude Code (global)
-cp -R "skills/$SKILL" ~/.claude/skills/
-
-# Codex (global)
-cp -R "skills/$SKILL" ~/.codex/skills/
-
-# Project (Cursor / Codex share .agents/skills)
 mkdir -p .agents/skills .claude/skills
 cp -R "skills/$SKILL" .agents/skills/
 cp -R "skills/$SKILL" .claude/skills/

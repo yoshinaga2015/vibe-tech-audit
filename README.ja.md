@@ -85,64 +85,23 @@ fix       →  指定 finding を閉じる（明示時のみ）
 
 [Agent Skills](https://agentskills.io/) 形式＋[skills CLI](https://skills.sh/)（`npx skills`）。**Cursor**、**Claude Code**、**Codex** ほか対応ホストで使えます。
 
-**推奨 — 主要エージェントへグローバルインストール**
-
 ```bash
-# 日本語
-npx skills add yoshinaga2015/vibe-tech-audit \
-  -s vibe-tech-audit-ja \
-  -a cursor -a claude-code -a codex \
-  -g
-
-# 英語
-npx skills add yoshinaga2015/vibe-tech-audit \
-  -s vibe-tech-audit \
-  -a cursor -a claude-code -a codex \
-  -g
+npx skills add yoshinaga2015/vibe-tech-audit
 ```
 
-**エージェントを1つだけ**（例）
-
-```bash
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a claude-code -g
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a codex -g
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a cursor -g
-```
-
-**プロジェクト共有**（アプリのリポジトリ直下で実行。`-g` なし）
-
-```bash
-npx skills add yoshinaga2015/vibe-tech-audit \
-  -s vibe-tech-audit-ja \
-  -a cursor -a claude-code -a codex
-```
-
-CLI が知る全エージェントへ:
-
-```bash
-npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a '*' -g
-```
-
-中身だけ確認:
-
-```bash
-npx skills add yoshinaga2015/vibe-tech-audit -l
-```
-
-更新:
-
-```bash
-npx skills update vibe-tech-audit-ja
-# または
-npx skills update vibe-tech-audit
-```
-
-その後 **新しいエージェントセッション** で:
+CLI が Skill（`vibe-tech-audit` / `vibe-tech-audit-ja`）、エージェント、global / project を聞いてきます。その後 **新しいエージェントセッション** で:
 
 ```text
 公開前に技術監査して
 この差分を技術監査して
 CRITICAL を直して
+```
+
+便利な追加:
+
+```bash
+npx skills add yoshinaga2015/vibe-tech-audit -l   # 中身だけ確認
+npx skills update vibe-tech-audit-ja               # または vibe-tech-audit
 ```
 
 | エージェント | CLI id | グローバル | プロジェクト |
@@ -151,7 +110,26 @@ CRITICAL を直して
 | Claude Code | `claude-code` | `~/.claude/skills/` | `.claude/skills/` |
 | Codex | `codex` | `~/.codex/skills/` | `.agents/skills/` |
 
-その他のホスト: [skills CLI supported agents](https://github.com/vercel-labs/skills#supported-agents)。
+その他: [skills CLI supported agents](https://github.com/vercel-labs/skills#supported-agents)。
+
+<details>
+<summary>非対話 / CI</summary>
+
+```bash
+# 日本語 → Claude Code、グローバル
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a claude-code -g -y
+
+# 英語 → Cursor + Claude Code + Codex、グローバル
+npx skills add yoshinaga2015/vibe-tech-audit \
+  -s vibe-tech-audit \
+  -a cursor -a claude-code -a codex \
+  -g -y
+
+# Skill パス直指定（-s 不要）
+npx skills add https://github.com/yoshinaga2015/vibe-tech-audit/tree/main/skills/vibe-tech-audit-ja -g -y
+```
+
+</details>
 
 <details>
 <summary>手動フォールバック（<code>cp</code>）</summary>
@@ -159,16 +137,10 @@ CRITICAL を直して
 ```bash
 SKILL=vibe-tech-audit-ja   # または vibe-tech-audit
 
-# Cursor（グローバル）
-cp -R "skills/$SKILL" ~/.cursor/skills/
+cp -R "skills/$SKILL" ~/.cursor/skills/    # Cursor
+cp -R "skills/$SKILL" ~/.claude/skills/    # Claude Code
+cp -R "skills/$SKILL" ~/.codex/skills/     # Codex
 
-# Claude Code（グローバル）
-cp -R "skills/$SKILL" ~/.claude/skills/
-
-# Codex（グローバル）
-cp -R "skills/$SKILL" ~/.codex/skills/
-
-# プロジェクト（Cursor / Codex は .agents/skills）
 mkdir -p .agents/skills .claude/skills
 cp -R "skills/$SKILL" .agents/skills/
 cp -R "skills/$SKILL" .claude/skills/
