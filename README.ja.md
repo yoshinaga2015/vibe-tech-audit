@@ -31,7 +31,7 @@
 
 ---
 
-デモで動くこと ≠ 公開して安全なこと。チャットで通った実装を、本番前提で潰します:
+デモで動くことと、公開して安全なことは別です。チャットで通った実装に対し、次の失敗を本番前に洗い出します。
 
 `IDOR` · `秘密情報の露出` · `RLS未設定` · `認証ガードの真偽反転` · `XSS` · `署名なし Webhook` · `AI/API 課金の青天井`
 
@@ -40,7 +40,7 @@
 | [`skills/vibe-tech-audit`](skills/vibe-tech-audit) | English | `vibe-tech-audit` |
 | [`skills/vibe-tech-audit-ja`](skills/vibe-tech-audit-ja) | 日本語 | `vibe-tech-audit-ja` |
 
-> **既定の姿勢:** 報告のみ。証拠必須（`file:line` またはコマンド出力）。でっち上げの PASS 禁止。**fix** モード以外で大規模リファクタしない。
+> デフォルトは報告のみです。finding には `file:line` かコマンド出力が必要で、証拠のない PASS は出しません。コードを直すのは **fix** モードを明示したときだけです。
 
 ---
 
@@ -62,17 +62,17 @@ fix       →  指定 finding を閉じる（明示時のみ）
 
 ## 任意の adversarial lens
 
-`feature`、`prelaunch`、修正後の再検証には `lens: adversarial` を追加できます。
+`feature`、`prelaunch`、修正後の再検証には `lens: adversarial` を付けられます。攻撃目標を置いて、信頼境界をまたぐ経路を証拠付きで追います。組織レッドチームの代替ではありません。
 
-目標志向の攻撃チェーン分析です。本格的な組織レッドチーム演習を実施したようには表現しません。
-
-| 観点 | 得られるもの |
+| 観点 | 内容 |
 |:---|:---|
 | 目標 | 攻撃目標と初期権限 |
 | チェーン | 信頼境界をまたぐ証拠付き経路 |
 | 判定 | `CONFIRMED` / `PLAUSIBLE` / `BLOCKED` / `UNVERIFIED` |
-| Blue team | prevention **と** detection / containment / recovery |
+| 防御側 | prevention に加え detection / containment / recovery |
 | 安全側 | 実環境テストの許可がなければ `static-only` |
+
+例の依頼文は次のとおりです。
 
 ```text
 公開前監査を攻撃者視点でも実行して。
@@ -83,13 +83,13 @@ fix       →  指定 finding を閉じる（明示時のみ）
 
 ## インストール
 
-[Agent Skills](https://agentskills.io/) 形式＋[skills CLI](https://skills.sh/)（`npx skills`）。**Cursor**、**Claude Code**、**Codex** ほか対応ホストで使えます。
+[Agent Skills](https://agentskills.io/) 形式です。[skills CLI](https://skills.sh/)（`npx skills`）で入れます。Cursor、Claude Code、Codex ほか対応ホストで動作します。
 
 ```bash
 npx skills add yoshinaga2015/vibe-tech-audit
 ```
 
-CLI が Skill（`vibe-tech-audit` / `vibe-tech-audit-ja`）、エージェント、global / project を聞いてきます。その後 **新しいエージェントセッション** で:
+CLI が Skill（`vibe-tech-audit` / `vibe-tech-audit-ja`）、エージェント、global / project を聞きます。入れ終わったらエージェントを開き直し、例えば次のように依頼します。
 
 ```text
 公開前に技術監査して
@@ -97,11 +97,12 @@ CLI が Skill（`vibe-tech-audit` / `vibe-tech-audit-ja`）、エージェント
 CRITICAL を直して
 ```
 
-便利な追加:
+一覧確認と更新です。
 
 ```bash
-npx skills add yoshinaga2015/vibe-tech-audit -l   # 中身だけ確認
-npx skills update vibe-tech-audit-ja               # または vibe-tech-audit
+npx skills add yoshinaga2015/vibe-tech-audit -l
+npx skills update vibe-tech-audit-ja
+# 英語版は vibe-tech-audit
 ```
 
 | エージェント | CLI id | グローバル | プロジェクト |
@@ -110,7 +111,7 @@ npx skills update vibe-tech-audit-ja               # または vibe-tech-audit
 | Claude Code | `claude-code` | `~/.claude/skills/` | `.claude/skills/` |
 | Codex | `codex` | `~/.codex/skills/` | `.agents/skills/` |
 
-その他: [skills CLI supported agents](https://github.com/vercel-labs/skills#supported-agents)。
+対応ホスト一覧は [skills CLI supported agents](https://github.com/vercel-labs/skills#supported-agents) を見てください。
 
 <details>
 <summary>非対話 / CI</summary>
@@ -155,13 +156,13 @@ cp -R "skills/$SKILL" .claude/skills/
 ```text
 1. Profile     スタックと表面（認可・決済・LLM・モバイル・アップロード・マルチテナント）
 2. Scan        scripts/scan-antipatterns.sh（または同等の Grep）で定番アンチパターン
-3. Prioritize  認可・データ経路を最優先 — 証拠必須
+3. Prioritize  認可・データ経路を最優先。証拠必須
 4. Deep-dive   該当表面だけ深掘り
 5. Optional    攻撃チェーン分析（adversarial lens）
-6. Assess      検知・対応も評価 → Severity 付きレポート（公開前は合否）
+6. Assess      検知・対応も評価し、Severity 付きレポート（公開前は合否）
 ```
 
-`SKILL.md` は薄く保ち、詳細は `references/` に置く（progressive disclosure）。
+入口は短い `SKILL.md` です。チェックの詳細は `references/` にあります。
 
 ---
 
@@ -175,14 +176,14 @@ cp -R "skills/$SKILL" .claude/skills/
 
 ---
 
-## これは何ではないか
+## 対象外
 
-| ではないもの | 理由 |
+| 項目 | 理由 |
 |:---|:---|
-| 本格ペンテスト / ASVS 認証の代替 | スコープが違う |
-| 本格レッドチーム演習の証明 | adversarial lens ≠ 組織レッドチーム |
-| 漏れた本番鍵のローテーション代行 | 回転作業は人間側 |
-| Skill サプライチェーン監査 | 無作為インストールの「承認」には使わない |
+| ペンテスト / ASVS 認証の代替 | スコープが違う |
+| 組織レッドチームの代替 | adversarial lens はその代替ではない |
+| 漏れた本番鍵のローテーション | 人間が行う作業 |
+| Skill インストールの安全性審査 | その用途には使わない |
 | 法務・コンプライアンス助言 | エンジニアリング用チェックリスト |
 
 ---
@@ -206,11 +207,11 @@ cp -R "skills/$SKILL" .claude/skills/
 
 ## 方法論
 
-以下にマッピングしています:
+チェック項目は次の枠組みを参照しています。
 
 - OWASP Top 10:2025
 - OWASP API Security Top 10:2023
-- ASVS 5.0（章立て参照）
+- ASVS 5.0（章立て）
 - WSTG · MASVS
 - OWASP LLM Top 10:2025
 - CWE Top 25
@@ -220,4 +221,4 @@ cp -R "skills/$SKILL" .claude/skills/
 
 ## ライセンス
 
-MIT — [LICENSE](LICENSE)
+MIT。[LICENSE](LICENSE) を参照してください。

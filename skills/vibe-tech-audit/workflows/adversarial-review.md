@@ -1,7 +1,7 @@
 # Workflow: adversarial-review
 
 Optional attacker lens for `feature`, `prelaunch`, or post-fix revalidation.
-This is goal-oriented attack-chain analysis, not a claim of a full red-team exercise.
+Sets an attacker objective and traces evidence-backed paths. Not a substitute for an organizational red team.
 
 ## Entry
 

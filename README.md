@@ -31,7 +31,7 @@
 
 ---
 
-Demo ≠ ship-ready. This skill hunts the failures that show up when “it works in the chat” is mistaken for “safe in production”:
+A demo that works is not a safe launch. This skill finds failures that show up when chat-passing code is treated as production-ready.
 
 `IDOR` · `leaked secrets` · `missing RLS` · `inverted auth guards` · `XSS` · `unsigned webhooks` · `unbounded AI/API spend`
 
@@ -40,7 +40,7 @@ Demo ≠ ship-ready. This skill hunts the failures that show up when “it works
 | [`skills/vibe-tech-audit`](skills/vibe-tech-audit) | English | `vibe-tech-audit` |
 | [`skills/vibe-tech-audit-ja`](skills/vibe-tech-audit-ja) | Japanese | `vibe-tech-audit-ja` |
 
-> **Default posture:** report only. Evidence required (`file:line` or command output). No invented PASS. No mass-refactor unless you enter **fix** mode.
+> Default is report only. Every finding needs `file:line` or command output. No PASS without evidence. Code changes happen only in **fix** mode when you ask for them.
 
 ---
 
@@ -62,17 +62,17 @@ fix       → close named findings (explicit only)
 
 ## Optional adversarial lens
 
-`feature`, `prelaunch`, and post-fix validation can also use `lens: adversarial`.
+Add `lens: adversarial` to `feature`, `prelaunch`, or post-fix validation. It sets an attacker objective and traces evidence-backed paths across trust boundaries. It is not a substitute for an organizational red team.
 
-Goal-oriented attack-chain analysis — **not** a claim of a full organizational red-team engagement.
-
-| Focus | What you get |
+| Focus | Content |
 |:---|:---|
 | Objective | Attacker goal + starting privilege |
 | Chains | Evidence-backed paths across trust boundaries |
 | Grades | `CONFIRMED` / `PLAUSIBLE` / `BLOCKED` / `UNVERIFIED` |
-| Blue team | Prevention **and** detection / containment / recovery |
-| Safety | `static-only` unless live-test authorization is explicit |
+| Defense | Prevention plus detection / containment / recovery |
+| Safety | `static-only` unless live testing is explicitly authorized |
+
+Example prompts follow.
 
 ```text
 Run a prelaunch audit with the adversarial lens.
@@ -83,13 +83,13 @@ Can a basic user reach another tenant's invoices?
 
 ## Install
 
-Uses the open [Agent Skills](https://agentskills.io/) format and the [skills CLI](https://skills.sh/) (`npx skills`). Works with **Cursor**, **Claude Code**, **Codex**, and other supported hosts.
+This repo uses the [Agent Skills](https://agentskills.io/) format. Install with the [skills CLI](https://skills.sh/) (`npx skills`). It works on Cursor, Claude Code, Codex, and other supported hosts.
 
 ```bash
 npx skills add yoshinaga2015/vibe-tech-audit
 ```
 
-The CLI asks which skill (`vibe-tech-audit` / `vibe-tech-audit-ja`), which agents, and global vs project. Then start a **new agent session** and ask:
+The CLI asks which skill (`vibe-tech-audit` / `vibe-tech-audit-ja`), which agents, and global vs project. After install, open a fresh agent session and try prompts like these.
 
 ```text
 Run a prelaunch security audit on this app
@@ -97,11 +97,12 @@ Tech-audit this diff
 Fix the CRITICAL findings from the audit
 ```
 
-Useful extras:
+List and update.
 
 ```bash
-npx skills add yoshinaga2015/vibe-tech-audit -l          # list skills only
-npx skills update vibe-tech-audit                         # or vibe-tech-audit-ja
+npx skills add yoshinaga2015/vibe-tech-audit -l
+npx skills update vibe-tech-audit
+# Japanese package: vibe-tech-audit-ja
 ```
 
 | Agent | CLI id | Global | Project |
@@ -110,7 +111,7 @@ npx skills update vibe-tech-audit                         # or vibe-tech-audit-j
 | Claude Code | `claude-code` | `~/.claude/skills/` | `.claude/skills/` |
 | Codex | `codex` | `~/.codex/skills/` | `.agents/skills/` |
 
-Other hosts: [skills CLI supported agents](https://github.com/vercel-labs/skills#supported-agents).
+Full host list: [skills CLI supported agents](https://github.com/vercel-labs/skills#supported-agents).
 
 <details>
 <summary>Non-interactive / CI</summary>
@@ -155,13 +156,13 @@ cp -R "skills/$SKILL" .claude/skills/
 ```text
 1. Profile     stack + surfaces (auth, payments, LLM, mobile, uploads, multi-tenant)
 2. Scan        antipatterns via scripts/scan-antipatterns.sh (or equivalent Grep)
-3. Prioritize  authorization & data paths first — evidence required
+3. Prioritize  authorization and data paths first; evidence required
 4. Deep-dive   only matching surfaces
 5. Optional    attack-chain analysis (adversarial lens)
-6. Assess      detection & response → Severity report (+ gate verdict for prelaunch)
+6. Assess      detection and response, then a Severity report (plus a gate verdict for prelaunch)
 ```
 
-Progressive disclosure: thin `SKILL.md`, deep checklists under `references/`.
+`SKILL.md` stays short. Detailed checks live under `references/`.
 
 ---
 
@@ -169,20 +170,20 @@ Progressive disclosure: thin `SKILL.md`, deep checklists under `references/`.
 
 | Need | Notes |
 |:---|:---|
-| An [Agent Skills](https://agentskills.io/)-compatible host | Cursor, Claude Code, Codex, OpenCode, Gemini CLI, GitHub Copilot, … |
+| An [Agent Skills](https://agentskills.io/)-compatible host | Cursor, Claude Code, Codex, OpenCode, Gemini CLI, GitHub Copilot, and others |
 | [skills CLI](https://skills.sh/) (recommended) | `npx skills add …` installs into the correct agent directories |
 | [ripgrep](https://github.com/BurntSushi/ripgrep) | Recommended for the scan script (`rg`) |
 
 ---
 
-## What this is not
+## Out of scope
 
-| Not this | Because |
+| Item | Why |
 |:---|:---|
-| Full penetration test / ASVS certification | Different engagement scope |
-| Full red-team exercise proof | Adversarial lens ≠ org red team |
-| Secret rotation for you | Humans still rotate leaked production keys |
-| Skill supply-chain auditor | Do not use it to “approve random skills” |
+| Penetration test / ASVS certification substitute | Different scope |
+| Organizational red-team substitute | Adversarial lens is not that |
+| Rotating leaked production secrets | Humans do that work |
+| Skill install safety review | Do not use it for that |
 | Legal / compliance advice | Engineering checklist only |
 
 ---
@@ -206,7 +207,7 @@ Progressive disclosure: thin `SKILL.md`, deep checklists under `references/`.
 
 ## Methodology
 
-Mapped against:
+Checklist items draw on these frameworks.
 
 - OWASP Top 10:2025
 - OWASP API Security Top 10:2023
@@ -220,4 +221,4 @@ Mapped against:
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
