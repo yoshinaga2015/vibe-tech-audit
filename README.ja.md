@@ -1,6 +1,6 @@
 <p align="right">
-  <a href="./README.md"><img src="https://img.shields.io/badge/EN-1e293b?style=for-the-badge&label=Docs&labelColor=0f172a" alt="English docs" /></a>
-  <a href="./README.ja.md"><img src="https://img.shields.io/badge/JP-0ea5e9?style=for-the-badge&label=Docs&labelColor=0f172a" alt="Japanese docs" /></a>
+  <a href="./README.md"><img src="https://img.shields.io/badge/EN-1e293b?style=for-the-badge&labelColor=0f172a" alt="English" /></a>
+  <a href="./README.ja.md"><img src="https://img.shields.io/badge/JP-0ea5e9?style=for-the-badge&labelColor=0f172a" alt="日本語" /></a>
 </p>
 
 <div align="center">
@@ -9,19 +9,13 @@
 
 **バイブコーディング向け・チェックリスト駆動の技術監査**
 
-Cursor Agent Skill · 証拠必須 · 報告ファースト
-
 <br />
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-0f172a?style=flat-square&labelColor=0ea5e9&color=0f172a)](LICENSE)
-[![Skill EN](https://img.shields.io/badge/skill-vibe--tech--audit-64748b?style=flat-square&labelColor=0f172a)](skills/vibe-tech-audit)
-[![Skill JA](https://img.shields.io/badge/skill-vibe--tech--audit--ja-0ea5e9?style=flat-square&labelColor=0f172a)](skills/vibe-tech-audit-ja)
-[![Modes](https://img.shields.io/badge/modes-feature%20%7C%20prelaunch%20%7C%20fix-38bdf8?style=flat-square&labelColor=0f172a)](#モード)
-[![Lens](https://img.shields.io/badge/lens-standard%20%7C%20adversarial-22d3ee?style=flat-square&labelColor=0f172a)](#任意の-adversarial-lens)
 
 <br />
 
-[インストール](#インストールcursor)
+[インストール](#インストール)
 ·
 [モード](#モード)
 ·
@@ -87,20 +81,41 @@ fix       →  指定 finding を閉じる（明示時のみ）
 
 ---
 
-## インストール（Cursor）
+## インストール
 
-**個人スキル**
+オープンな [skills CLI](https://skills.sh/)（`npx skills`）を使います。
+
+**グローバル（個人の Cursor skills）**
 
 ```bash
 # 日本語
-cp -R skills/vibe-tech-audit-ja ~/.cursor/skills/
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a cursor -g
 
 # 英語
-cp -R skills/vibe-tech-audit ~/.cursor/skills/
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a cursor -g
 ```
 
-1. Cursor を再起動するか、エージェントをリロードします。
-2. プロジェクトのチャットで例:
+**プロジェクト共有**（アプリのリポジトリ直下で実行。`-g` なし）
+
+```bash
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a cursor
+```
+
+中身だけ確認:
+
+```bash
+npx skills add yoshinaga2015/vibe-tech-audit -l
+```
+
+更新:
+
+```bash
+npx skills update vibe-tech-audit-ja
+# または
+npx skills update vibe-tech-audit
+```
+
+その後 Cursor を再起動／新しいエージェントチャットで:
 
 ```text
 公開前に技術監査して
@@ -108,14 +123,20 @@ cp -R skills/vibe-tech-audit ~/.cursor/skills/
 CRITICAL を直して
 ```
 
-どちらか一方の言語だけ入れて構いません。
-
-**プロジェクト共有**
+<details>
+<summary>手動フォールバック（<code>cp</code>）</summary>
 
 ```bash
+# 個人
+cp -R skills/vibe-tech-audit-ja ~/.cursor/skills/
+cp -R skills/vibe-tech-audit ~/.cursor/skills/
+
+# プロジェクト
 mkdir -p .cursor/skills
 cp -R skills/vibe-tech-audit-ja .cursor/skills/
 ```
+
+</details>
 
 ---
 

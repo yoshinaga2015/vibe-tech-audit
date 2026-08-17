@@ -1,6 +1,6 @@
 <p align="right">
-  <a href="./README.md"><img src="https://img.shields.io/badge/EN-0ea5e9?style=for-the-badge&label=Docs&labelColor=0f172a" alt="English docs" /></a>
-  <a href="./README.ja.md"><img src="https://img.shields.io/badge/JP-1e293b?style=for-the-badge&label=Docs&labelColor=0f172a" alt="Japanese docs" /></a>
+  <a href="./README.md"><img src="https://img.shields.io/badge/EN-0ea5e9?style=for-the-badge&labelColor=0f172a" alt="English" /></a>
+  <a href="./README.ja.md"><img src="https://img.shields.io/badge/JP-1e293b?style=for-the-badge&labelColor=0f172a" alt="日本語" /></a>
 </p>
 
 <div align="center">
@@ -9,19 +9,13 @@
 
 **Checklist-driven technical audit for vibe-coded apps**
 
-Cursor Agent Skill · evidence-required · report-first
-
 <br />
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-0f172a?style=flat-square&labelColor=0ea5e9&color=0f172a)](LICENSE)
-[![Skill EN](https://img.shields.io/badge/skill-vibe--tech--audit-0ea5e9?style=flat-square&labelColor=0f172a)](skills/vibe-tech-audit)
-[![Skill JA](https://img.shields.io/badge/skill-vibe--tech--audit--ja-64748b?style=flat-square&labelColor=0f172a)](skills/vibe-tech-audit-ja)
-[![Modes](https://img.shields.io/badge/modes-feature%20%7C%20prelaunch%20%7C%20fix-38bdf8?style=flat-square&labelColor=0f172a)](#modes)
-[![Lens](https://img.shields.io/badge/lens-standard%20%7C%20adversarial-22d3ee?style=flat-square&labelColor=0f172a)](#optional-adversarial-lens)
 
 <br />
 
-[Install](#install-cursor)
+[Install](#install)
 ·
 [Modes](#modes)
 ·
@@ -87,20 +81,41 @@ Can a basic user reach another tenant's invoices?
 
 ---
 
-## Install (Cursor)
+## Install
 
-**Personal skill**
+Uses the open [skills CLI](https://skills.sh/) (`npx skills`).
+
+**Global (personal Cursor skills)**
 
 ```bash
 # English
-cp -R skills/vibe-tech-audit ~/.cursor/skills/
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a cursor -g
 
 # Japanese
-cp -R skills/vibe-tech-audit-ja ~/.cursor/skills/
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit-ja -a cursor -g
 ```
 
-1. Restart Cursor or reload agents so the skill is discovered.
-2. Ask in a project chat:
+**Project-scoped** (run from the app repo root; omit `-g`)
+
+```bash
+npx skills add yoshinaga2015/vibe-tech-audit -s vibe-tech-audit -a cursor
+```
+
+List what the package contains without installing:
+
+```bash
+npx skills add yoshinaga2015/vibe-tech-audit -l
+```
+
+Update later:
+
+```bash
+npx skills update vibe-tech-audit
+# or
+npx skills update vibe-tech-audit-ja
+```
+
+Then restart Cursor / start a new agent chat and ask:
 
 ```text
 Run a prelaunch security audit on this app
@@ -108,14 +123,20 @@ Tech-audit this diff
 Fix the CRITICAL findings from the audit
 ```
 
-Install only one language if you do not need both.
-
-**Project skill** (shared with the repo)
+<details>
+<summary>Manual fallback (<code>cp</code>)</summary>
 
 ```bash
+# Personal
+cp -R skills/vibe-tech-audit ~/.cursor/skills/
+cp -R skills/vibe-tech-audit-ja ~/.cursor/skills/
+
+# Project
 mkdir -p .cursor/skills
 cp -R skills/vibe-tech-audit .cursor/skills/
 ```
+
+</details>
 
 ---
 
